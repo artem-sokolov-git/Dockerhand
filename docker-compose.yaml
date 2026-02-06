@@ -1,0 +1,31 @@
+name: dockhand-stack
+services:
+  dockhand:
+    image: fnsys/dockhand:latest
+    container_name: dockhand
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME_DIR}:${HOME_DIR}
+      - dockhand_data:/app/data
+
+  postgres:
+    image: postgres:18.1-alpine3.23
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  dockhand_data:
+    name: dockhand_data
+  postgres_data:
+    name: postgres_data
+
+networks:
+  default:
+    name: dockhand-stack-network
